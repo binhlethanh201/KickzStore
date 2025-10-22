@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = width * 0.45;
@@ -26,8 +26,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 10,
     alignItems: "center",
-
-    // shadow nhẹ kiểu stockx
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,

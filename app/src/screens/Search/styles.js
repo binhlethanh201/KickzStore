@@ -67,8 +67,6 @@ const styles = StyleSheet.create({
     color: "#888",
     fontSize: 15,
   },
-
-  // 🧩 Recent Search Styles
   recentContainer: {
     marginTop: 10,
   },

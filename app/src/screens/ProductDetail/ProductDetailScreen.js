@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
-import { View, Text, Image, ActivityIndicator, ScrollView, TouchableOpacity, Alert } from "react-native";
 import axios from "axios";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { ActivityIndicator, Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styles from "./styles";
 
 export default function ProductDetailScreen({ route, navigation }) {
-  const { item } = route.params; 
+  const { item } = route.params;
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +33,6 @@ export default function ProductDetailScreen({ route, navigation }) {
         setLoading(false);
       }
     };
-
     fetchProduct();
   }, [item?._id]);
 
@@ -61,7 +60,6 @@ export default function ProductDetailScreen({ route, navigation }) {
       <Text style={styles.brand}>{product.brand}</Text>
       <Text style={styles.price}>${product.price}</Text>
       <Text style={styles.description}>{product.description}</Text>
-
       <TouchableOpacity
         style={styles.button}
         onPress={() => Alert.alert("🛒", `${product.name} add to cart successfully!`)}

@@ -1,9 +1,14 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#F9F9F9",
+  },
+
   container: {
     flex: 1,
-    backgroundColor: "#F9F9F9", // nền sáng trung tính
+    backgroundColor: "#F9F9F9",
   },
 
   scrollContainer: {
@@ -18,7 +23,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#111", // đậm, rõ ràng
+    color: "#111",
   },
 });
 

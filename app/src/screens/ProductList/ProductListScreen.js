@@ -1,31 +1,38 @@
-import React, { useEffect, useState } from "react";
-import {
-  FlatList,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-} from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
+import React, { useCallback, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import styles from "./style";
 
 export default function ProductList({ navigation }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetched, setFetched] = useState(false); // ✅ đánh dấu đã load
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:9999/api/products")
-      .then((res) => {
-        setProducts(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error loading products: ", err.message);
-        setLoading(false);
-      });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (!fetched) {
+        setLoading(true);
+        axios
+          .get("http://localhost:9999/api/products")
+          .then((res) => {
+            setProducts(res.data);
+            setFetched(true); // ✅ chỉ load 1 lần
+          })
+          .catch((err) => {
+            console.error("Error loading products: ", err.message);
+          })
+          .finally(() => setLoading(false));
+      }
+    }, [fetched])
+  );
 
   const onPressProduct = (product) => {
     navigation.navigate("ProductDetail", { item: product });

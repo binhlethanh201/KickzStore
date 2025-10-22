@@ -1,13 +1,11 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-
-// Import các screen
-import HomeScreen from "../screens/Home/HomeScreen";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React from "react";
+import AccountScreen from "../screens/Account/AccountScreen";
+import CartScreen from "../screens/Cart/CartScreen";
 import SearchScreen from "../screens/Search/SearchScreen";
 import WishlistScreen from "../screens/Wishlist/WishlistScreen";
-import CartScreen from "../screens/Cart/CartScreen";
-import AccountScreen from "../screens/Account/AccountScreen";
+import HomeStackNavigator from "./HomeStackNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -49,7 +47,22 @@ export default function MenuNavigator() {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen
+        name="Home"
+        component={HomeStackNavigator}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            const state = navigation.getState();
+            const homeRoute = state.routes.find((r) => r.name === "Home");
+            const isAtHomeMain = homeRoute?.state?.index === 0;
+
+            if (!isAtHomeMain) {
+              e.preventDefault();
+              navigation.navigate("Home", { screen: "HomeMain" });
+            }
+          },
+        })}
+      />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Wishlist" component={WishlistScreen} />
       <Tab.Screen name="Cart" component={CartScreen} />

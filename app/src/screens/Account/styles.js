@@ -1,0 +1,94 @@
+import { StyleSheet } from "react-native";
+
+export default StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: 24,
+    backgroundColor: "#fff",
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "700",
+    textAlign: "center",
+    color: "#111",
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "#666",
+    marginBottom: 25,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+    backgroundColor: "#fafafa",
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    marginBottom: 15,
+  },
+  button: {
+    backgroundColor: "#16A34A",
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 5,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 17,
+    fontWeight: "600",
+  },
+  footerText: {
+    textAlign: "center",
+    marginTop: 25,
+    fontSize: 15,
+    color: "#444",
+  },
+  linkText: {
+    color: "#16A34A",
+    fontWeight: "600",
+  },
+  radioButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#e5e5e5",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "#fafafa",
+    flex: 1,
+    marginRight: 10,
+  },
+  radioButtonSelected: {
+    borderColor: "#16A34A",
+    backgroundColor: "#ECFDF5",
+  },
+  radioCircle: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 2,
+    borderColor: "#aaa",
+    marginRight: 8,
+  },
+  radioCircleSelected: {
+    borderColor: "#16A34A",
+    backgroundColor: "#16A34A",
+  },
+  radioLabel: {
+    fontSize: 15,
+    color: "#444",
+  },
+  radioLabelSelected: {
+    color: "#16A34A",
+    fontWeight: "600",
+  },
+});

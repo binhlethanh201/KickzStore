@@ -30,10 +30,10 @@ class ProductController{
     
           const products = await Product.find({
             $or: [
-              { name: { $regex: query, $options: 'i' } },   // Tìm theo tên
-              { brand: { $regex: query, $options: 'i' } },  // hoặc theo thương hiệu
+              { name: { $regex: query, $options: 'i' } },  
+              { brand: { $regex: query, $options: 'i' } },  
             ],
-          }).limit(20) // Giới hạn 20 kết quả
+          }).limit(20) 
     
           res.status(200).json(products)
         } catch (err) {

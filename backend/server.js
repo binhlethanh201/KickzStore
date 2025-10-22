@@ -5,16 +5,16 @@ const port = process.env.PORT || 9999
 const connectDB = require('./config/db')
 const router = require('./routes/index')
 const cors = require('cors')
+
 app.use(cors())
 app.use(cors({
     origin: ['http://localhost:8081']
   }))
-  
 
 app.use(express.json())
 connectDB()
-app.use('/api', router)
 
+app.use('/api', router)
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 })

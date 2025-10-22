@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  TextInput,
+  ActivityIndicator,
   FlatList,
   Image,
+  Text,
+  TextInput,
   TouchableOpacity,
-  ActivityIndicator,
+  View,
 } from "react-native";
 import styles from "./styles";
 
 export default function SearchScreen({ navigation }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
-  const [recentSearches, setRecentSearches] = useState([]); // ✅ thêm state lưu tạm
+  const [recentSearches, setRecentSearches] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleSearch = async (text) => {
@@ -30,10 +30,8 @@ export default function SearchScreen({ navigation }) {
       );
       const data = await response.json();
       setResults(data);
-
-      // ✅ Lưu vào danh sách recent nếu chưa có
       if (text.trim() && !recentSearches.includes(text.trim())) {
-        setRecentSearches((prev) => [text.trim(), ...prev.slice(0, 4)]); // giữ tối đa 5 từ
+        setRecentSearches((prev) => [text.trim(), ...prev.slice(0, 4)]);
       }
     } catch (error) {
       console.error("Error searching: ", error);
@@ -51,7 +49,12 @@ export default function SearchScreen({ navigation }) {
     <TouchableOpacity
       style={styles.card}
       activeOpacity={0.9}
-      onPress={() => navigation.navigate("ProductDetail", { item })}
+      onPress={() =>
+        navigation.navigate("Home", {
+          screen: "ProductDetail",
+          params: { item, fromSearch: true }, // ✅ thêm flag này
+        })
+      }
     >
       <Image source={{ uri: item.img }} style={styles.image} />
       <View style={styles.info}>
@@ -83,8 +86,6 @@ export default function SearchScreen({ navigation }) {
         value={query}
         onChangeText={handleSearch}
       />
-
-      {/* ✅ Hiển thị recent searches khi chưa nhập gì */}
       {query.length === 0 && recentSearches.length > 0 ? (
         <View style={styles.recentContainer}>
           <Text style={styles.recentTitle}>Recent Searches</Text>
