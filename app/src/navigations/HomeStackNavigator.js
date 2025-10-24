@@ -25,7 +25,6 @@ export default function HomeStackNavigator() {
             <TouchableOpacity
               style={{ marginLeft: 10 }}
               onPress={() => {
-                // ✅ nếu đến từ Search → quay về Search
                 if (route.params?.fromSearch) {
                   navigation.navigate("Search");
                 } else {

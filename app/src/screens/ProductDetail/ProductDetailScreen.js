@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { ActivityIndicator, Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { getToken } from "../../utils/auth";
 import styles from "./styles";
 
 export default function ProductDetailScreen({ route, navigation }) {
@@ -62,7 +63,52 @@ export default function ProductDetailScreen({ route, navigation }) {
       <Text style={styles.description}>{product.description}</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => Alert.alert("🛒", `${product.name} add to cart successfully!`)}
+        onPress={async () => {
+          try {
+            const token = await getToken();
+            if (!token) {
+              Alert.alert("Login Required", "Please login to add items to your cart.");
+              navigation.navigate("Login");
+              return;
+            }
+
+            const res = await fetch("http://localhost:9999/api/carts", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                productId: product._id,
+                itemQuantity: 1,
+              }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+              Alert.alert(
+                "🛒 Added to Cart",
+                `${product.name} has been added successfully.`,
+                [
+                  {
+                    text: "Go to Cart",
+                    onPress: () => navigation.navigate("Cart"),
+                  },
+                  {
+                    text: "Continue Shopping",
+                    style: "cancel",
+                  },
+                ]
+              );
+            } else {
+              Alert.alert("Error", data.message || "Failed to add product to cart.");
+            }
+          } catch (error) {
+            console.error("Add to cart error:", error);
+            Alert.alert("Error", "Failed to connect to server.");
+          }
+        }}
       >
         <Text style={styles.buttonText}>Add to Cart</Text>
       </TouchableOpacity>
