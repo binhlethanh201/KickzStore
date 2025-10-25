@@ -1,7 +1,9 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
+import ChangePasswordScreen from "../screens/Account/ChangePasswordScreen";
 import LoginScreen from "../screens/Account/LoginScreen";
 import RegisterScreen from "../screens/Account/RegisterScreen";
+import UpdateProfileScreen from "../screens/Account/UpdateProfileScreen";
 import CheckoutScreen from "../screens/Cart/CheckoutScreen";
 import PaymentScreen from "../screens/Cart/PaymentScreen";
 import MenuNavigator from "./MenuNavigator";
@@ -25,6 +27,16 @@ export default function AppNavigator() {
         name="Register"
         component={RegisterScreen}
         options={{ title: "Register" }}
+      />
+      <Stack.Screen
+        name="UpdateProfile"
+        component={UpdateProfileScreen}
+        options={{ title: "UpdateProfile" }}
+      />
+      <Stack.Screen
+        name="ChangePassword"
+        component={ChangePasswordScreen}
+        options={{ title: "ChangePassword" }}
       />
       <Stack.Screen
         name="Checkout"

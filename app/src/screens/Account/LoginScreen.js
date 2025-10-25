@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { saveToken } from "../../utils/auth";
-import styles from "./styles";
-
+import styles from "./updateStyles";
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
       return Alert.alert("Validation Error", "Email and password are required.");
@@ -17,7 +14,6 @@ export default function LoginScreen({ navigation }) {
     if (!validateEmail(email)) {
       return Alert.alert("Validation Error", "Please enter a valid email address.");
     }
-
     try {
       setLoading(true);
       const response = await fetch("http://localhost:9999/api/auth/login", {
@@ -26,7 +22,6 @@ export default function LoginScreen({ navigation }) {
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
-
       if (response.ok) {
         await saveToken(data.token);
         Alert.alert("Success", "Login successful! Welcome to KickzStore");
@@ -46,7 +41,6 @@ export default function LoginScreen({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Welcome Back</Text>
       <Text style={styles.subtitle}>Sign in to continue</Text>
-
       <TextInput
         placeholder="Email address"
         style={styles.input}
@@ -55,7 +49,6 @@ export default function LoginScreen({ navigation }) {
         autoCapitalize="none"
         keyboardType="email-address"
       />
-
       <TextInput
         placeholder="Password"
         style={styles.input}
@@ -63,7 +56,6 @@ export default function LoginScreen({ navigation }) {
         onChangeText={setPassword}
         secureTextEntry
       />
-
       <TouchableOpacity
         style={[styles.button, loading && styles.buttonDisabled]}
         onPress={handleLogin}
@@ -73,7 +65,6 @@ export default function LoginScreen({ navigation }) {
           {loading ? "Signing in..." : "Sign In"}
         </Text>
       </TouchableOpacity>
-
       <Text style={styles.footerText}>
         Don’t have an account?{" "}
         <Text

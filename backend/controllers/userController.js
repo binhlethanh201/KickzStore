@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
 class UserController {
   async getAll(req, res, next) {
     try {
@@ -50,7 +51,13 @@ class UserController {
         }
         user.phone = phone;
       }
-      if (address) user.address = address;
+      if (address && typeof address === "object") {
+        user.address.street = address.street || user.address.street;
+        user.address.city = address.city || user.address.city;
+        user.address.district = address.district || user.address.district;
+        user.address.country = address.country || user.address.country;
+      }
+
       if (email && email !== user.email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {

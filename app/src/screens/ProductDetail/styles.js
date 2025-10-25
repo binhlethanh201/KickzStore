@@ -52,6 +52,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  optionLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 6,
+    color: "#111",
+  },
+  optionRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  optionButton: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  optionSelected: {
+    backgroundColor: "#16A34A",
+    borderColor: "#16A34A",
+  },
+  optionText: {
+    color: "#111",
+    fontWeight: "500",
+  },
+  optionTextSelected: {
+    color: "#fff",
+  },
+  
 
 });
 

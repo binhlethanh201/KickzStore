@@ -114,21 +114,38 @@ class CartController {
   async deleteCartItem(req, res) {
     try {
       const userId = req.user.id;
-      const { cartId } = req.params;
-
-      const cartItem = await Cart.findOne({ _id: cartId, userId });
-      if (!cartItem) {
-        return res.status(404).json({ message: "Cart item not found" });
+      const { productId } = req.params;
+      let { size, color } = req.body;
+  
+      // ép kiểu an toàn
+      if (size !== undefined) size = Number(size);
+      if (color !== undefined) color = String(color);
+  
+      const cart = await Cart.findOne({ userId });
+      if (!cart) return res.status(404).json({ message: "Cart not found" });
+  
+      const initialLength = cart.items.length;
+      cart.items = cart.items.filter(
+        (item) =>
+          !(
+            item.productId.toString() === productId &&
+            item.size === size &&
+            item.color === color
+          )
+      );
+  
+      if (cart.items.length === initialLength) {
+        return res.status(404).json({ message: "Item not found in cart" });
       }
-
-      await Cart.deleteOne({ _id: cartId, userId });
-      res
-        .status(200)
-        .json({ message: "Cart item deleted successfully", deleted: true });
+  
+      await cart.save();
+      res.status(200).json({ message: "Item deleted successfully", cart });
     } catch (error) {
       console.error("Delete cart item error:", error);
       res.status(500).json({ message: "Server error", error: error.message });
     }
   }
+  
+  
 }
 module.exports = new CartController();

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -14,29 +15,37 @@ export default function AccountScreen({ navigation }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const token = await getToken();
-      if (!token) {
-        setLoading(false);
-        return;
+  const fetchProfile = async () => {
+    const token = await getToken();
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+    try {
+      const res = await fetch("http://localhost:9999/api/users/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data.user);
+      } else {
+        setUser(null);
       }
-      try {
-        const response = await fetch("http://localhost:9999/api/users/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user);
-        }
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProfile();
-  }, []);
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      fetchProfile();
+    }, [])
+  );
 
   const handleLogout = async () => {
     await removeToken();
@@ -56,27 +65,32 @@ export default function AccountScreen({ navigation }) {
     <View style={styles.container}>
       {user ? (
         <>
-          <View style={{ alignItems: "center", marginBottom: 25 }}>
+          <View style={styles.userCard}>
             <Image
               source={{
-                uri:
-                  "https://cdn-icons-png.flaticon.com/512/847/847969.png",
+                uri: "https://cdn-icons-png.flaticon.com/512/847/847969.png",
               }}
-              style={{ width: 90, height: 90, borderRadius: 45, marginBottom: 10 }}
+              style={styles.avatar}
             />
-            <Text style={styles.title}>
+            <Text style={styles.userName}>
               {user.firstName} {user.lastName}
             </Text>
-            <Text style={{ color: "#666", marginBottom: 5 }}>{user.email}</Text>
-            <Text style={{ color: "#666" }}>
-              {user.address ? user.address : "No address provided"}
+            <Text style={styles.userEmail}>{user.email}</Text>
+            <Text style={styles.userAddress}>
+              {user.address
+                ? `${user.address.street || ""}, ${user.address.district || ""}, ${user.address.city || ""}, ${user.address.country || ""}`
+                : "No address provided"}
             </Text>
           </View>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("UpdateProfile", { user })}>
+            <Text style={styles.buttonText}>Update Profile</Text>
+          </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: "#e11d48" }]}
-            onPress={handleLogout}
-          >
+          <TouchableOpacity style={[styles.button, styles.buttonBlue]} onPress={() => navigation.navigate("ChangePassword")}>
+            <Text style={styles.buttonText}>Change Password</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.button, styles.buttonRed]} onPress={handleLogout}>
             <Text style={styles.buttonText}>Sign Out</Text>
           </TouchableOpacity>
         </>
@@ -84,14 +98,12 @@ export default function AccountScreen({ navigation }) {
         <>
           <Text style={styles.title}>Welcome!</Text>
           <Text style={styles.subtitle}>Sign in or create a new account</Text>
-
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate("Login")}
           >
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={[styles.button, { backgroundColor: "orange", marginTop: 10 }]}
             onPress={() => navigation.navigate("Register")}

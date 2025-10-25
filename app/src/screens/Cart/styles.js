@@ -164,6 +164,25 @@ export default StyleSheet.create({
     fontWeight: "500",
     marginLeft: 8,
   },
+
+  deleteButtonTop: {
+    position: "absolute",
+    top: 5,
+    right: 10,
+    zIndex: 10,
+    backgroundColor: "#f87171",
+    borderRadius: 15,
+    width: 25,
+    height: 25,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  deleteButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  
   
   
 });

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const voucherController = require("../controllers/voucherController");
 const verifyToken = require("../middlewares/auth");
-const checkAdmin = require("../middlewares/checkAdmin");
+const checkAdmin = require("../middlewares/admin");
 
 router.post("/", verifyToken, checkAdmin, voucherController.create);
 router.put("/:id", verifyToken, checkAdmin, voucherController.update);
