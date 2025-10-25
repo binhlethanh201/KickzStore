@@ -5,16 +5,32 @@ require("dotenv").config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 class AuthController {
-  // [POST] /api/auth/register
   async register(req, res) {
     try {
-      let { firstName, lastName, dateOfBirth, gender, address, email, password } = req.body;
+      let {
+        firstName,
+        lastName,
+        dateOfBirth,
+        gender,
+        phone,
+        address,
+        email,
+        password,
+      } = req.body;
       if (!firstName || !lastName || !email || !password) {
         return res.status(400).json({ message: "Missing required fields" });
       }
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         return res.status(400).json({ message: "Invalid email format" });
+      }
+      if (phone) {
+        const phoneRegex = /^(?:\+?\d{1,3})?[ -]?\d{8,15}$/;
+        if (!phoneRegex.test(phone)) {
+          return res
+            .status(400)
+            .json({ message: "Invalid phone number format" });
+        }
       }
       const existingUser = await User.findOne({ email });
       if (existingUser) {
@@ -33,11 +49,14 @@ class AuthController {
         lastName,
         dateOfBirth,
         gender,
+        phone,
         address,
         email,
         password: hashedPassword,
       });
+
       await newUser.save();
+
       res.status(201).json({
         message: "User registered successfully",
         user: {
@@ -53,7 +72,6 @@ class AuthController {
     }
   }
 
-  // [POST] /api/auth/login
   async login(req, res) {
     try {
       const { email, password } = req.body;
@@ -61,15 +79,16 @@ class AuthController {
       if (!user) {
         return res.status(400).json({ message: "Invalid email or password" });
       }
+
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
         return res.status(400).json({ message: "Invalid email or password" });
       }
-      const token = jwt.sign(
-        { id: user._id, email: user.email },
-        JWT_SECRET,
-        { expiresIn: "2h" }
-      );
+
+      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
+        expiresIn: "2h",
+      });
+
       res.status(200).json({
         message: "Login successful",
         token,

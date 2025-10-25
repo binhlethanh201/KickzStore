@@ -48,7 +48,7 @@ export default function ProductList({ navigation }) {
       <Text style={styles.title} numberOfLines={1}>
         {item.name}
       </Text>
-      <Text style={styles.category}>{item.brand}</Text>
+      <Text style={styles.category}>{item.category}</Text>
       <Text style={styles.price}>${item.price}</Text>
     </TouchableOpacity>
   );
