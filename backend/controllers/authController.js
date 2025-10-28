@@ -85,7 +85,7 @@ class AuthController {
         return res.status(400).json({ message: "Invalid email or password" });
       }
 
-      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
+      const token = jwt.sign({ id: user._id, email: user.email, }, JWT_SECRET, {
         expiresIn: "2h",
       });
 

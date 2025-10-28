@@ -1,4 +1,6 @@
 const Order = require("../models/Order");
+const Cart = require("../models/Cart");
+const Voucher = require("../models/Voucher");
 
 class OrderController {
   async getAll(req, res) {
@@ -39,80 +41,131 @@ class OrderController {
     try {
       const userId = req.user.id;
       const {
-        items,
+        selectedItems,
+        shippingMethod,
+        address,
+        paymentMethod,
+        voucherCode,
+      } = req.body;
+
+      if (!selectedItems || selectedItems.length === 0) {
+        return res.status(400).json({ message: "No items selected for checkout" });
+      }
+
+      // Kiểm tra cart hợp lệ
+      const cart = await Cart.findOne({ userId }).populate("items.productId");
+      if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+      // Xử lý các item được chọn
+      const orderItems = [];
+      let totalPrice = 0;
+
+      for (const item of selectedItems) {
+        const found = cart.items.find(
+          (ci) =>
+            ci.productId._id.toString() === item.productId &&
+            ci.size === item.size &&
+            ci.color === item.color
+        );
+        if (found) {
+          const price = found.productId.price * found.quantity;
+          totalPrice += price;
+          orderItems.push({
+            productId: found.productId._id,
+            quantity: found.quantity,
+            price: found.productId.price,
+          });
+        }
+      }
+
+      // Áp dụng voucher nếu có
+      let discount = 0;
+      if (voucherCode) {
+        const voucher = await Voucher.findOne({
+          code: voucherCode,
+          isActive: true,
+          startDate: { $lte: new Date() },
+          endDate: { $gte: new Date() },
+        });
+
+        if (!voucher) {
+          return res.status(400).json({ message: "Invalid or expired voucher" });
+        }
+
+        if (totalPrice < voucher.minOrderValue) {
+          return res
+            .status(400)
+            .json({ message: `Order must be at least $${voucher.minOrderValue} to use this voucher` });
+        }
+
+        discount =
+          voucher.discountType === "percent"
+            ? (totalPrice * voucher.discountValue) / 100
+            : voucher.discountValue;
+
+        if (discount > totalPrice) discount = totalPrice;
+      }
+
+      // Shipping fee
+      const shippingFee = shippingMethod === "express" ? 5 : 0;
+
+      const finalPrice = totalPrice - discount + shippingFee;
+
+      // Tạo order mới
+      const newOrder = new Order({
+        userId,
+        items: orderItems,
         shippingMethod,
         shippingFee,
         address,
         paymentMethod,
         voucherCode,
         discount,
-        totalPrice,
-      } = req.body;
-
-      if (
-        !items ||
-        items.length === 0 ||
-        !shippingMethod ||
-        !address ||
-        !paymentMethod ||
-        !totalPrice
-      ) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-
-      const newOrder = new Order({
-        userId,
-        items,
-        shippingMethod,
-        shippingFee: shippingFee || 0,
-        address,
-        paymentMethod,
-        voucherCode,
-        discount: discount || 0,
-        totalPrice,
+        totalPrice: finalPrice,
       });
 
       await newOrder.save();
 
+      // Xóa các sản phẩm đã mua khỏi giỏ
+      cart.items = cart.items.filter(
+        (ci) =>
+          !selectedItems.some(
+            (si) =>
+              si.productId === ci.productId.toString() &&
+              si.size === ci.size &&
+              si.color === ci.color
+          )
+      );
+      await cart.save();
+
       res.status(201).json({
-        message: "Order created successfully",
+        message: "Order placed successfully",
         order: newOrder,
       });
     } catch (err) {
-      res
-        .status(500)
-        .json({ message: "Error creating order", error: err.message });
+      console.error("Create order error:", err);
+      res.status(500).json({ message: "Server error", error: err.message });
     }
   }
 
+  // Cập nhật trạng thái đơn hàng (admin)
   async updateStatus(req, res) {
     try {
       const { orderId } = req.params;
       const { status } = req.body;
 
-      const order = await Order.findById(orderId);
-      if (!order) return res.status(404).json({ message: "Order not found" });
+      const order = await Order.findByIdAndUpdate(
+        orderId,
+        { status },
+        { new: true }
+      );
 
-      if (
-        ![
-          "pending",
-          "processing",
-          "shipped",
-          "completed",
-          "cancelled",
-        ].includes(status)
-      ) {
-        return res.status(400).json({ message: "Invalid status value" });
-      }
-
-      order.status = status;
-      await order.save();
+      if (!order)
+        return res.status(404).json({ message: "Order not found" });
 
       res.status(200).json({ message: "Order status updated", order });
     } catch (err) {
-      res
-        .status(500)
-        .json({ message: "Error updating order", error: err.message });
+      res.status(500).json({ message: "Error updating order", error: err.message });
     }
   }
 }

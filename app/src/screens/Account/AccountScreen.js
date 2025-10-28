@@ -95,7 +95,7 @@ export default function AccountScreen({ navigation }) {
           </TouchableOpacity>
         </>
       ) : (
-        <>
+        <View style={styles.centerContent}>
           <Text style={styles.title}>Welcome!</Text>
           <Text style={styles.subtitle}>Sign in or create a new account</Text>
           <TouchableOpacity
@@ -110,7 +110,7 @@ export default function AccountScreen({ navigation }) {
           >
             <Text style={styles.buttonText}>Register</Text>
           </TouchableOpacity>
-        </>
+        </View>
       )}
     </View>
   );

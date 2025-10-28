@@ -53,4 +53,9 @@ export default StyleSheet.create({
     fontSize: 17,
     fontWeight: "600",
   },
+  linkText:{
+    color: 'green',
+    textAlign: 'center',
+    textDecorationLine: 'underline'
+  }
 });

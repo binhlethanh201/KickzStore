@@ -4,8 +4,7 @@ import ChangePasswordScreen from "../screens/Account/ChangePasswordScreen";
 import LoginScreen from "../screens/Account/LoginScreen";
 import RegisterScreen from "../screens/Account/RegisterScreen";
 import UpdateProfileScreen from "../screens/Account/UpdateProfileScreen";
-import CheckoutScreen from "../screens/Cart/CheckoutScreen";
-import PaymentScreen from "../screens/Cart/PaymentScreen";
+import CheckoutScreen from "../screens/Order/CheckoutScreen";
 import MenuNavigator from "./MenuNavigator";
 
 const Stack = createStackNavigator();
@@ -42,11 +41,6 @@ export default function AppNavigator() {
         name="Checkout"
         component={CheckoutScreen}
         options={{ headerShown: true, title: "Checkout" }}
-      />
-      <Stack.Screen
-        name="Payment"
-        component={PaymentScreen}
-        options={{ headerShown: true, title: "Payment" }}
       />
     </Stack.Navigator>
   );

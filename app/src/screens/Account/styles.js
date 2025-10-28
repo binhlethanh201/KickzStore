@@ -9,6 +9,13 @@ export default StyleSheet.create({
     paddingVertical: 40,
     backgroundColor: "#fff",
   },
+  centerContent: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    width: "100%",
+  },
+  
   title: {
     fontSize: 26,
     fontWeight: "700",

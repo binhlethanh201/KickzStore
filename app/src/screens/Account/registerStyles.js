@@ -93,4 +93,9 @@ export default StyleSheet.create({
         color: "#16A34A",
         fontWeight: "600",
     },
+    linkText:{
+        color: 'green',
+        textAlign: 'center',
+        textDecorationLine: 'underline'
+      }
 });
