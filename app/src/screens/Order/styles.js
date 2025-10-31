@@ -1,93 +1,187 @@
 import { StyleSheet } from "react-native";
 
-export default StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: "#fff",
-  },
-  loaderContainer: {
+const styles = StyleSheet.create({
+  safeContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    backgroundColor: "#FFFFFF",
   },
   title: {
-    fontSize: 24,
-    fontWeight: "700",
-    marginBottom: 15,
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#111111",
+    marginTop: 10,
+    marginBottom: 20,
   },
   section: {
-    marginBottom: 20,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    marginBottom: 25,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 10,
+    color: "#333333",
+    marginBottom: 15,
   },
-  itemRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: 5,
-  },
-  itemText: { fontSize: 16 },
-  itemPrice: { fontWeight: "600" },
-  shippingOption: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
+  input: {
+    backgroundColor: "#F5F5F5",
+    color: "#222222",
     borderRadius: 8,
-    marginVertical: 5,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
   },
-  shippingOptionSelected: {
-    borderColor: "#00C39A",
-    backgroundColor: "#E8FDF7",
-  },
-  shippingText: { fontSize: 16 },
-  shippingPrice: { fontWeight: "600" },
-  voucherRow: {
+  optionGroup: {
     flexDirection: "row",
-    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 10,
   },
-  voucherInput: {
+  optionButton: {
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#CCCCCC",
+  },
+  optionButtonSelected: {
+    backgroundColor: "#16A34A",
+    borderColor: "#16A34A",
+  },
+  optionButtonText: {
+    color: "#333333",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+
+  optionButtonTextSelected: {
+    color: "#FFFFFF",
+  },
+  summaryItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  summaryItemText: {
+    color: "#555555",
+    fontSize: 15,
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 8,
   },
-  voucherButton: {
-    backgroundColor: "#00C39A",
-    padding: 10,
-    borderRadius: 8,
-    marginLeft: 10,
-  },
-  voucherButtonText: { color: "#fff", fontWeight: "600" },
-  voucherApplied: { color: "green", marginTop: 8 },
   summaryRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 4,
-  },
-  summaryRowTotal: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: "#EEEEEE",
   },
-  totalText: { fontSize: 18, fontWeight: "700" },
-  checkoutButton: {
-    backgroundColor: "#00C39A",
-    padding: 15,
-    borderRadius: 10,
+  summaryLabel: {
+    color: "#888888",
+    fontSize: 16,
+  },
+  summaryValue: {
+    color: "#222222",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  summaryTotal: {
+    marginTop: 15,
+    paddingTop: 15,
+  },
+  summaryTotalLabel: {
+    color: "#111111",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  summaryTotalValue: {
+    color: "#16A34A",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  note: {
+    color: "#999999",
+    fontSize: 12,
+    marginTop: 10,
+    fontStyle: "italic",
+  },
+  footer: {
+    padding: 20,
+    backgroundColor: "#FFFFFF",
+    borderTopWidth: 1,
+    borderTopColor: "#DDDDDD",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  placeOrderButton: {
+    backgroundColor: "#16A34A",
+    paddingVertical: 16,
+    borderRadius: 12,
     alignItems: "center",
-    marginTop: 20,
+    justifyContent: "center",
   },
-  checkoutButtonText: {
-    color: "#fff",
-    fontWeight: "700",
+  placeOrderButtonText: {
+    color: "#FFFFFF",
     fontSize: 18,
+    fontWeight: "bold",
+  },
+  disabledButton: {
+    backgroundColor: "#DDDDDD",
+  },
+
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#EEEEEE',
+  },
+  itemImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 6,
+    marginRight: 12,
+    backgroundColor: '#EEEEEE',
+  },
+  itemInfo: {
+    flex: 1,
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  itemName: {
+    color: '#222222',
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  itemDetail: {
+    color: '#777777',
+    fontSize: 13,
+    marginBottom: 4,
+  },
+  itemQuantity: {
+    color: '#555555',
+    fontSize: 14,
+  },
+  itemPriceContainer: {
+    paddingLeft: 10,
+    alignItems: 'flex-end',
+  },
+  itemPrice: {
+    color: '#111111',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
+
+export default styles;

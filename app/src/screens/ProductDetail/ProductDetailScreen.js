@@ -85,7 +85,7 @@ export default function ProductDetailScreen({ route, navigation }) {
 
       if (res.ok) {
         Alert.alert("🛒 Added to Cart", `${product.name} added successfully!`, [
-          { text: "Go to Cart", onPress: () => navigation.navigate("Cart") },
+          { text: "Go to Cart", onPress: () => navigation.navigate("MainMenu", { screen: "Cart" }) },
           { text: "Continue Shopping", style: "cancel" },
         ]);
       } else {

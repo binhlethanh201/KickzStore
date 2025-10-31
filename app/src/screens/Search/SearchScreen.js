@@ -50,9 +50,9 @@ export default function SearchScreen({ navigation }) {
       style={styles.card}
       activeOpacity={0.9}
       onPress={() =>
-        navigation.navigate("Home", {
-          screen: "ProductDetail",
-          params: { item, fromSearch: true }, // ✅ thêm flag này
+        navigation.navigate("ProductDetail", {
+          item: item,
+          fromSearch: true,
         })
       }
     >

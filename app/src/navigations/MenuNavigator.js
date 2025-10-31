@@ -3,9 +3,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import AccountScreen from "../screens/Account/AccountScreen";
 import CartScreen from "../screens/Cart/CartScreen";
+import HomeScreen from "../screens/Home/HomeScreen";
 import SearchScreen from "../screens/Search/SearchScreen";
-import WishlistScreen from "../screens/Wishlist/WishlistScreen";
-import HomeStackNavigator from "./HomeStackNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -33,9 +32,6 @@ export default function MenuNavigator() {
             case "Search":
               iconName = "search-outline";
               break;
-            case "Wishlist":
-              iconName = "heart-outline";
-              break;
             case "Cart":
               iconName = "cart-outline";
               break;
@@ -49,22 +45,9 @@ export default function MenuNavigator() {
     >
       <Tab.Screen
         name="Home"
-        component={HomeStackNavigator}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            const state = navigation.getState();
-            const homeRoute = state.routes.find((r) => r.name === "Home");
-            const isAtHomeMain = homeRoute?.state?.index === 0;
-
-            if (!isAtHomeMain) {
-              e.preventDefault();
-              navigation.navigate("Home", { screen: "HomeMain" });
-            }
-          },
-        })}
+        component={HomeScreen}
       />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Wishlist" component={WishlistScreen} />
       <Tab.Screen name="Cart" component={CartScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
     </Tab.Navigator>
