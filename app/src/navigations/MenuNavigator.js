@@ -5,6 +5,7 @@ import AccountScreen from "../screens/Account/AccountScreen";
 import CartScreen from "../screens/Cart/CartScreen";
 import HomeScreen from "../screens/Home/HomeScreen";
 import SearchScreen from "../screens/Search/SearchScreen";
+import OrderListScreen from "../screens/Order/OrderListScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -35,6 +36,9 @@ export default function MenuNavigator() {
             case "Cart":
               iconName = "cart-outline";
               break;
+            case "Orders":
+              iconName = "receipt-outline";
+              break;
             case "Account":
               iconName = "person-outline";
               break;
@@ -43,12 +47,10 @@ export default function MenuNavigator() {
         },
       })}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-      />
+      <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Cart" component={CartScreen} />
+      <Tab.Screen name="Orders" component={OrderListScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
     </Tab.Navigator>
   );

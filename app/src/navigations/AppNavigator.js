@@ -9,6 +9,12 @@ import UpdateProfileScreen from "../screens/Account/UpdateProfileScreen";
 import CartScreen from "../screens/Cart/CartScreen";
 import CheckoutScreen from "../screens/Order/CheckoutScreen";
 import MenuNavigator from "./MenuNavigator";
+import OrderListScreen from "../screens/Order/OrderListScreen";
+import OrderDetailScreen from "../screens/Order/OrderDetailScreen";
+import ProductListByBrandScreen from "../screens/Brand/ProductListByBrandScreen";
+import ProductByColor from "../screens/ProductList/ProductByColor";
+import ProductByPrice from "../screens/ProductList/ProductByPrice";
+import ProductByQuantity from "../screens/ProductList/ProductByQuantity";
 
 const Stack = createStackNavigator();
 
@@ -71,9 +77,37 @@ export default function AppNavigator() {
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
-        options={{
-          headerTitle: "Checkout"
-        }}
+        options={{ headerTitle: "Checkout" }}
+      />
+      <Stack.Screen
+        name="OrderList"
+        component={OrderListScreen}
+        options={{ title: "OrderList" }}
+      />
+      <Stack.Screen
+        name="OrderDetail"
+        component={OrderDetailScreen}
+        options={{ title: "OrderDetail" }}
+      />
+      <Stack.Screen
+        name="ProductListByBrand"
+        component={ProductListByBrandScreen}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="ProductByColor"
+        component={ProductByColor}
+        options={{ title: "Sort By Color" }}
+      />
+      <Stack.Screen
+        name="ProductByPrice"
+        component={ProductByPrice}
+        options={{ title: "Sort By Price" }}
+      />
+      <Stack.Screen
+        name="ProductByQuantity"
+        component={ProductByQuantity}
+        options={{ title: "Sort By Quantity" }}
       />
     </Stack.Navigator>
   );

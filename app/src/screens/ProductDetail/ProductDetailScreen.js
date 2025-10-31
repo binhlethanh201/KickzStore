@@ -5,10 +5,12 @@ import {
   Alert,
   Image,
   ScrollView,
+  StatusBar,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { getToken } from "../../utils/auth";
 import styles from "./styles";
 
@@ -18,13 +20,16 @@ export default function ProductDetailScreen({ route, navigation }) {
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: item?.name || "Product Detail",
+      title: "",
+      headerStyle: { backgroundColor: "#FFFFFF" },
+      headerShadowVisible: false,
       headerRight: () => <View />,
     });
-  }, [navigation, item]);
+  }, [navigation]);
 
   useEffect(() => {
     if (!item?._id) {
@@ -51,6 +56,7 @@ export default function ProductDetailScreen({ route, navigation }) {
   }, [item?._id]);
 
   const handleAddToCart = async () => {
+    setIsAddingToCart(true);
     try {
       const token = await getToken();
       if (!token) {
@@ -94,13 +100,15 @@ export default function ProductDetailScreen({ route, navigation }) {
     } catch (error) {
       console.error("Add to cart error:", error);
       Alert.alert("Error", "Failed to connect to server.");
+    } finally {
+      setIsAddingToCart(false);
     }
   };
 
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#00C39A" />
+        <ActivityIndicator size="large" color="#16A34A" />
         <Text style={{ marginTop: 10 }}>Loading product detail...</Text>
       </View>
     );
@@ -115,68 +123,79 @@ export default function ProductDetailScreen({ route, navigation }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Image style={styles.image} source={{ uri: product.img }} />
-      <Text style={styles.title}>{product.name}</Text>
-      <Text style={styles.brand}>{product.brand}</Text>
-      <Text style={styles.price}>${product.price}</Text>
-      <Text style={styles.description}>{product.description}</Text>
 
-      {/* ✅ Size selection */}
-      <View style={{ marginVertical: 10 }}>
-        <Text style={styles.optionLabel}>Select Size:</Text>
-        <View style={styles.optionRow}>
-          {product.size?.map((size) => (
-            <TouchableOpacity
-              key={size}
-              style={[
-                styles.optionButton,
-                selectedSize === size && styles.optionSelected,
-              ]}
-              onPress={() => setSelectedSize(size)}
-            >
-              <Text
-                style={[
-                  styles.optionText,
-                  selectedSize === size && styles.optionTextSelected,
-                ]}
-              >
-                {size}
-              </Text>
-            </TouchableOpacity>
-          ))}
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" />
+      <ScrollView style={styles.scrollContainer}>
+        <View style={styles.imageContainer}>
+          <Image style={styles.image} source={{ uri: product.img }} />
         </View>
-      </View>
-
-      {/* ✅ Color selection */}
-      <View style={{ marginVertical: 10 }}>
-        <Text style={styles.optionLabel}>Select Color:</Text>
-        <View style={styles.optionRow}>
-          {product.color?.map((color) => (
-            <TouchableOpacity
-              key={color}
-              style={[
-                styles.optionButton,
-                selectedColor === color && styles.optionSelected,
-              ]}
-              onPress={() => setSelectedColor(color)}
-            >
-              <Text
-                style={[
-                  styles.optionText,
-                  selectedColor === color && styles.optionTextSelected,
-                ]}
-              >
-                {color}
-              </Text>
-            </TouchableOpacity>
-          ))}
+        <View style={styles.infoContainer}>
+          <Text style={styles.title}>{product.name}</Text>
+          <Text style={styles.brand}>Brand: {product.brand}</Text>
+          <Text style={styles.price}>${product.price}</Text>
         </View>
+        <View style={styles.optionSection}>
+          <Text style={styles.optionLabel}>Select Size</Text>
+          <View style={styles.optionRow}>
+            {product.size?.map((size) => (
+              <TouchableOpacity
+                key={size}
+                style={[
+                  styles.optionButton,
+                  selectedSize === size && styles.optionSelected,
+                ]}
+                onPress={() => setSelectedSize(size)}
+              >
+                <Text
+                  style={[
+                    styles.optionText,
+                    selectedSize === size && styles.optionTextSelected,
+                  ]}
+                >
+                  {size}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+        <View style={styles.optionSection}>
+          <Text style={styles.optionLabel}>Select Color</Text>
+          <View style={styles.optionRow}>
+            {product.color?.map((color) => (
+              <TouchableOpacity
+                key={color}
+                style={[
+                  styles.optionButton,
+                  selectedColor === color && styles.optionSelected,
+                  styles.colorOptionButton,
+                  { backgroundColor: color.toLowerCase() === 'white' ? '#f0f0f0' : color.toLowerCase() }
+                ]}
+                onPress={() => setSelectedColor(color)}
+              >
+                {selectedColor === color && <View style={styles.colorOptionSelectedRing} />}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+        <View style={styles.descriptionSection}>
+          <Text style={styles.optionLabel}>Description</Text>
+          <Text style={styles.description}>{product.description}</Text>
+        </View>
+      </ScrollView>
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={[styles.button, isAddingToCart && styles.buttonDisabled]}
+          onPress={handleAddToCart}
+          disabled={isAddingToCart}
+        >
+          {isAddingToCart ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+            <Text style={styles.buttonText}>Add to Cart</Text>
+          )}
+        </TouchableOpacity>
       </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
-        <Text style={styles.buttonText}>Add to Cart</Text>
-      </TouchableOpacity>
-    </ScrollView>
+    </SafeAreaView>
   );
 }

@@ -1,4 +1,6 @@
 const Product = require("../models/Product");
+const Brand = require("../models/Brand");
+const Category = require("../models/Category");
 
 class ProductController {
   async getAll(req, res, next) {
@@ -65,23 +67,77 @@ class ProductController {
 
   async getBrands(req, res, next) {
     try {
-      const brands = await Product.distinct("brand");
+      const brands = await Brand.find();
       res.status(200).json(brands);
     } catch (err) {
       res
         .status(500)
-        .json({ message: "Error fetching brand list", error: err.message });
+        .json({ message: "Error fetching brands", error: err.message });
     }
   }
 
   async getCategories(req, res, next) {
     try {
-      const categories = await Product.distinct("category");
+      const categories = await Category.find();
       res.status(200).json(categories);
     } catch (err) {
       res
         .status(500)
-        .json({ message: "Error fetching category list", error: err.message });
+        .json({ message: "Error fetching categories", error: err.message });
+    }
+  }
+
+  async getByPrice(req, res, next) {
+    try {
+      const products = await Product.find({})
+        .sort({ price: -1 })
+        .limit(10);
+      res.status(200).json(products);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error fetching products by price", error: err.message });
+    }
+  }
+
+  async getByQuantity(req, res, next) {
+    try {
+      const products = await Product.find({})
+        .sort({ quantity: -1 })
+        .limit(10);
+      res.status(200).json(products);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error fetching products by quantity", error: err.message });
+    }
+  }
+
+  async getByColorCount(req, res, next) {
+    try {
+      const products = await Product.aggregate([
+        {
+          $addFields: {
+            colorCount: { $size: "$color" }
+          }
+        },
+        {
+          $sort: { colorCount: -1 }
+        },
+        {
+          $limit: 10
+        },
+        {
+          $project: {
+            colorCount: 0
+          }
+        }
+      ]);
+      res.status(200).json(products);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error fetching products by color count", error: err.message });
     }
   }
 }

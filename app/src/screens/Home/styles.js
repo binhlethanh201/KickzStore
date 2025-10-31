@@ -13,15 +13,17 @@ const styles = StyleSheet.create({
 
   scrollContainer: {
     paddingVertical: 20,
+    paddingBottom: 30,
   },
 
   header: {
     paddingHorizontal: 16,
+    marginTop: 10,
     marginBottom: 8,
   },
 
   title: {
-    fontSize: 24,
+    fontSize: 29,
     fontWeight: "700",
     color: "#111",
   },

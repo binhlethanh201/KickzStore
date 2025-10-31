@@ -143,7 +143,7 @@ export default function CheckoutScreen() {
       if (res.ok) {
         Alert.alert("Success", "Your order has been placed successfully!");
         navigation.popToTop();
-        navigation.navigate("MainMenu", { screen: "Home" });
+        navigation.navigate("OrderDetail", { orderId: data.order._id });
       } else {
         Alert.alert("Order Failed", data.message || "Something went wrong.");
       }
@@ -164,7 +164,6 @@ export default function CheckoutScreen() {
       >
         <Text style={styles.title}>Checkout</Text>
 
-        {/* Shipping Address (Không đổi) */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Shipping Address</Text>
           <TextInput
@@ -175,16 +174,12 @@ export default function CheckoutScreen() {
             onChangeText={setAddress}
           />
         </View>
-
-        {/* **MỤC SẢN PHẨM MỚI** */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Items ({selectedItems.length})</Text>
           {selectedItems.map((item) => (
             <CheckoutItem key={getItemKey(item)} item={item} />
           ))}
         </View>
-
-        {/* Shipping Method (Không đổi) */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Shipping Method</Text>
           <View style={styles.optionGroup}>
@@ -202,12 +197,9 @@ export default function CheckoutScreen() {
             />
           </View>
         </View>
-
-        {/* Payment Method (Không đổi) */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Payment Method</Text>
           <View style={styles.optionGroup}>
-            {/* ...Các OptionButton... */}
             <OptionButton
               label="Cash on Delivery (COD)"
               value="cod"
@@ -228,8 +220,6 @@ export default function CheckoutScreen() {
             />
           </View>
         </View>
-
-        {/* Promo Code (Không đổi) */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Promo Code</Text>
           <TextInput
@@ -241,11 +231,8 @@ export default function CheckoutScreen() {
             autoCapitalize="characters"
           />
         </View>
-
-        {/* Order Summary (Không đổi) */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Order Summary</Text>
-          {/* ...Phần tóm tắt giá... */}
           {selectedItems.map((item) => (
             <View key={getItemKey(item)} style={styles.summaryItem}>
               <Text style={styles.summaryItemText}>
@@ -273,8 +260,6 @@ export default function CheckoutScreen() {
           </Text>
         </View>
       </ScrollView>
-
-      {/* Footer (Không đổi) */}
       <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.placeOrderButton, loading && styles.disabledButton]}

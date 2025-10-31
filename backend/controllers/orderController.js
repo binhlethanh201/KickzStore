@@ -37,6 +37,25 @@ class OrderController {
         .json({ message: "Error fetching orders", error: err.message });
     }
   }
+
+  async getOrderDetail(req, res) {
+    try {
+      const { orderId } = req.params;
+      const userId = req.user.id;
+      const order = await Order.findOne({ _id: orderId, userId: userId })
+        .populate("items.productId", "name price img brand");
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      res.status(200).json({ message: "Get order detail successfully", order });
+    } catch (err) {
+      if (err.name === 'CastError') {
+        return res.status(400).json({ message: "Invalid order ID format" });
+      }
+      res.status(500).json({ message: "Error fetching order detail", error: err.message });
+    }
+  }
+
   async createOrder(req, res) {
     try {
       const userId = req.user.id;
@@ -51,12 +70,8 @@ class OrderController {
       if (!selectedItems || selectedItems.length === 0) {
         return res.status(400).json({ message: "No items selected for checkout" });
       }
-
-      // Kiểm tra cart hợp lệ
       const cart = await Cart.findOne({ userId }).populate("items.productId");
       if (!cart) return res.status(404).json({ message: "Cart not found" });
-
-      // Xử lý các item được chọn
       const orderItems = [];
       let totalPrice = 0;
 
@@ -77,8 +92,6 @@ class OrderController {
           });
         }
       }
-
-      // Áp dụng voucher nếu có
       let discount = 0;
       if (voucherCode) {
         const voucher = await Voucher.findOne({
@@ -105,13 +118,8 @@ class OrderController {
 
         if (discount > totalPrice) discount = totalPrice;
       }
-
-      // Shipping fee
       const shippingFee = shippingMethod === "express" ? 5 : 0;
-
       const finalPrice = totalPrice - discount + shippingFee;
-
-      // Tạo order mới
       const newOrder = new Order({
         userId,
         items: orderItems,
@@ -125,8 +133,6 @@ class OrderController {
       });
 
       await newOrder.save();
-
-      // Xóa các sản phẩm đã mua khỏi giỏ
       cart.items = cart.items.filter(
         (ci) =>
           !selectedItems.some(
@@ -137,7 +143,6 @@ class OrderController {
           )
       );
       await cart.save();
-
       res.status(201).json({
         message: "Order placed successfully",
         order: newOrder,
@@ -148,7 +153,6 @@ class OrderController {
     }
   }
 
-  // Cập nhật trạng thái đơn hàng (admin)
   async updateStatus(req, res) {
     try {
       const { orderId } = req.params;
@@ -159,7 +163,6 @@ class OrderController {
         { status },
         { new: true }
       );
-
       if (!order)
         return res.status(404).json({ message: "Order not found" });
 
@@ -168,6 +171,70 @@ class OrderController {
       res.status(500).json({ message: "Error updating order", error: err.message });
     }
   }
+
+  async cancelOrder(req, res) {
+    try {
+      const { orderId } = req.params;
+      const userId = req.user.id;
+      const updatedOrder = await Order.findOneAndUpdate(
+        {
+          _id: orderId,
+          userId: userId,
+          status: "pending"
+        },
+        {
+          status: "cancelled"
+        },
+        {
+          new: true
+        }
+      );
+      if (!updatedOrder) {
+        const order = await Order.findOne({ _id: orderId, userId: userId });
+        if (!order) {
+          return res.status(404).json({ message: "Order not found or you are not authorized" });
+        }
+        return res.status(400).json({
+          message: `Order cannot be cancelled. Its current status is "${order.status}".`
+        });
+      }
+      res.status(200).json({ message: "Order successfully cancelled", order: updatedOrder });
+    } catch (err) {
+      if (err.name === 'CastError') {
+        return res.status(400).json({ message: "Invalid order ID format" });
+      }
+      res.status(500).json({ message: "Server error while cancelling order", error: err.message });
+    }
+  }
+
+  async deleteOrder(req, res) {
+    try {
+      const { orderId } = req.params;
+      const userId = req.user.id;
+      const deletedOrder = await Order.findOneAndDelete({
+        _id: orderId,
+        userId: userId,
+        status: "cancelled"
+      });
+      if (!deletedOrder) {
+        const order = await Order.findOne({ _id: orderId, userId: userId });
+        if (!order) {
+          return res.status(404).json({ message: "Order not found or you are not authorized" });
+        }
+        return res.status(400).json({
+          message: `Order cannot be deleted. Its status is "${order.status}", not "cancelled".`
+        });
+      }
+      res.status(200).json({ message: "Order successfully deleted" });
+    } catch (err) {
+      if (err.name === 'CastError') {
+        return res.status(400).json({ message: "Invalid order ID format" });
+      }
+      res.status(500).json({ message: "Server error while deleting order", error: err.message });
+    }
+  }
+
 }
 
 module.exports = new OrderController();
+

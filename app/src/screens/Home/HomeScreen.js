@@ -2,6 +2,11 @@ import React from "react";
 import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProductList from "../ProductList/ProductListScreen";
+import BrandList from "../Brand/BrandList";
+import CategoryList from "../Category/CategoryList";
+import ProductByColor from "../ProductList/ProductByColor";
+import ProductByPrice from "../ProductList/ProductByPrice";
+import ProductByQuantity from "../ProductList/ProductByQuantity";
 import styles from "./styles";
 
 export default function HomeScreen({ navigation }) {
@@ -16,6 +21,11 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.title}>👟 KickzStore.</Text>
         </View>
         <ProductList navigation={navigation} />
+        <BrandList navigation={navigation} />
+        <ProductByPrice navigation={navigation} />
+        <ProductByQuantity navigation={navigation} />
+        <ProductByColor navigation={navigation} />
+        <CategoryList navigation={navigation} />
       </ScrollView>
     </SafeAreaView>
   );

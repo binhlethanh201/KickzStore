@@ -9,10 +9,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import styles from "./style";
+import styles from "./styles";
 
-export default function ProductList({ navigation }) {
-  const [products, setProducts] = useState([]);
+export default function CategoryList({ navigation }) {
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetched, setFetched] = useState(false);
 
@@ -21,35 +21,34 @@ export default function ProductList({ navigation }) {
       if (!fetched) {
         setLoading(true);
         axios
-          .get("http://localhost:9999/api/products")
+          .get("http://localhost:9999/api/products/categories")
           .then((res) => {
-            setProducts(res.data);
+            setCategories(res.data);
             setFetched(true);
           })
           .catch((err) => {
-            console.error("Error loading products: ", err.message);
+            console.error("Error loading categories: ", err.message);
           })
           .finally(() => setLoading(false));
       }
     }, [fetched])
   );
 
-  const onPressProduct = (product) => {
-    navigation.navigate("ProductDetail", { item: product });
+  const onPressCategory = (categoryName) => {
+    navigation.navigate("ProductListByBrand", { categoryName: categoryName });
   };
 
-  const renderProduct = ({ item }) => (
+  const renderCategory = ({ item }) => (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={() => onPressProduct(item)}
+      onPress={() => onPressCategory(item.name)}
       style={styles.card}
     >
-      <Image style={styles.photo} source={{ uri: item.img }} />
-      <Text style={styles.title} numberOfLines={1}>
-        {item.name}
-      </Text>
-      <Text style={styles.category}>{item.category}</Text>
-      <Text style={styles.price}>${item.price}</Text>
+      <Image
+        source={{ uri: item.imageUrl }}
+        style={styles.image}
+      />
+      <Text style={styles.title}>{item.name}</Text>
     </TouchableOpacity>
   );
 
@@ -57,18 +56,18 @@ export default function ProductList({ navigation }) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#16A34A" />
-        <Text style={{ marginTop: 10, color: "#000" }}>Loading products...</Text>
+        <Text style={{ marginTop: 10, color: "#000" }}>Loading categories...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Recommended For You</Text>
+      <Text style={styles.sectionTitle}>Shop by Category</Text>
       <FlatList
         horizontal
-        data={products}
-        renderItem={renderProduct}
+        data={categories}
+        renderItem={renderCategory}
         keyExtractor={(item) => item._id}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.horizontalList}
@@ -76,3 +75,4 @@ export default function ProductList({ navigation }) {
     </View>
   );
 }
+
