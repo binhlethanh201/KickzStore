@@ -304,12 +304,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#FFFFFF",
   },
-
   statusPending: {
     backgroundColor: "#FFA500",
   },
-  statusShipped: {
+  statusProcessing: {
     backgroundColor: "#1E90FF",
+  },
+  statusShipped: {
+    backgroundColor: "#32CD32",
   },
   statusCompleted: {
     backgroundColor: "#16A34A",

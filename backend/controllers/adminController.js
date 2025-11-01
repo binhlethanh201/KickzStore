@@ -155,9 +155,47 @@ class AdminController {
   }
   async createVoucher(req, res) {
     try {
-      const newVoucher = new Voucher(req.body);
+      const {
+        code,
+        description,
+        discountType,
+        discountValue,
+        minOrderValue,
+        expiresAt,
+        maxUsage,
+        isActive
+      } = req.body;
+      let dbDiscountType;
+      if (discountType === "Percentage") {
+        dbDiscountType = "percent";
+      } else if (discountType === "Fixed") {
+        dbDiscountType = "amount";
+      } else {
+        return res.status(400).json({ message: `Invalid discountType: ${discountType}. Must be 'Percentage' or 'Fixed'.` });
+      }
+      const dbStartDate = new Date();
+      let dbEndDate;
+      if (expiresAt) {
+        dbEndDate = new Date(expiresAt);
+        if (isNaN(dbEndDate.getTime())) {
+          return res.status(400).json({ message: "Invalid expiresAt date format. Use YYYY-MM-DD." });
+        }
+      } else {
+        dbEndDate = new Date(dbStartDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+      }
+      const newVoucher = new Voucher({
+        code,
+        description,
+        discountType: dbDiscountType,
+        discountValue,
+        minOrderValue: minOrderValue || 0,
+        startDate: dbStartDate,
+        endDate: dbEndDate,
+        isActive,
+      });
       await newVoucher.save();
       res.status(201).json(newVoucher);
+
     } catch (error) {
       if (error.code === 11000) {
         return res.status(400).json({ message: "Voucher code must be unique." });
@@ -170,9 +208,30 @@ class AdminController {
   }
   async updateVoucher(req, res) {
     try {
-      if (req.body.code) {
+      const updateData = { ...req.body };
+      if (updateData.discountType) {
+        if (updateData.discountType === "Percentage") {
+          updateData.discountType = "percent";
+        } else if (updateData.discountType === "Fixed") {
+          updateData.discountType = "amount";
+        } else {
+          return res.status(400).json({ message: `Invalid discountType: ${updateData.discountType}` });
+        }
+      }
+      if (updateData.expiresAt) {
+        const dbEndDate = new Date(updateData.expiresAt);
+        if (isNaN(dbEndDate.getTime())) {
+          return res.status(400).json({ message: "Invalid expiresAt date format. Use YYYY-MM-DD." });
+        }
+        updateData.endDate = dbEndDate;
+        delete updateData.expiresAt;
+      }
+      if (updateData.maxUsage !== undefined) {
+        delete updateData.maxUsage;
+      }
+      if (updateData.code) {
         const existing = await Voucher.findOne({
-          code: req.body.code,
+          code: updateData.code,
           _id: { $ne: req.params.id }
         });
         if (existing) {
@@ -181,7 +240,7 @@ class AdminController {
       }
       const updatedVoucher = await Voucher.findByIdAndUpdate(
         req.params.id,
-        req.body,
+        updateData,
         { new: true, runValidators: true }
       );
       if (!updatedVoucher)
@@ -205,7 +264,7 @@ class AdminController {
     }
   }
 
-  //Products Management
+  //Products Managements
   async createProduct(req, res) {
     try {
       const newProduct = new Product(req.body);

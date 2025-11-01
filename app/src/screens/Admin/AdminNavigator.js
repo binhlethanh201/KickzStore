@@ -4,6 +4,9 @@ import React from "react";
 import { useColorScheme } from "react-native";
 import AdminHomeScreen from "./AdminHomeScreen";
 import UserManagementScreen from "./User/UserManagementScreen";
+import OrderManagementScreen from "./Order/OrderManagementScreen";
+import VoucherManagementScreen from "./Voucher/VoucherManagementScreen";
+import ProductManagementScreen from "./Product/ProductManagementScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -39,6 +42,15 @@ export default function AdminNavigator() {
             case "ManageUsers":
               iconName = "people-outline";
               break;
+            case "ManageOrders":
+              iconName = "receipt-outline";
+              break;
+            case "ManageVouchers":
+              iconName = "pricetag-outline";
+              break;
+            case "ManageProducts":
+              iconName = "cube-outline";
+              break;
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -54,6 +66,22 @@ export default function AdminNavigator() {
         component={UserManagementScreen}
         options={{ title: "Users" }}
       />
+      <Tab.Screen
+        name="ManageOrders"
+        component={OrderManagementScreen}
+        options={{ title: "Orders" }}
+      />
+       <Tab.Screen
+        name="ManageVouchers"
+        component={VoucherManagementScreen}
+        options={{ title: "Vouchers" }}
+      />
+       <Tab.Screen
+        name="ManageProducts"
+        component={ProductManagementScreen}
+        options={{ title: "Products" }}
+      />
+
     </Tab.Navigator>
   );
 }

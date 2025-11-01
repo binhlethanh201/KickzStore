@@ -16,6 +16,8 @@ import ProductByPrice from "../screens/ProductList/ProductByPrice";
 import ProductByQuantity from "../screens/ProductList/ProductByQuantity";
 import CreateUserScreen from "../screens/Admin/User/CreateUserScreen";
 import UserDetailScreen from "../screens/Admin/User/UserDetailScreen";
+import AdminOrderDetailScreen from "../screens/Admin/Order/AdminOrderDetailScreen";
+import VoucherDetailScreen from "../screens/Admin/Voucher/VoucherDetailScreen";
 
 import MenuNavigator from "./MenuNavigator";
 import AdminNavigator from "../screens/Admin/AdminNavigator";
@@ -38,6 +40,16 @@ export default function AppNavigator() {
       <Stack.Screen
         name="UserDetailScreen"
         component={UserDetailScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AdminOrderDetail"
+        component={AdminOrderDetailScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="VoucherDetailScreen"
+        component={VoucherDetailScreen}
         options={{ headerShown: false }}
       />
 
