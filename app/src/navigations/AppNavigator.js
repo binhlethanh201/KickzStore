@@ -8,13 +8,17 @@ import RegisterScreen from "../screens/Account/RegisterScreen";
 import UpdateProfileScreen from "../screens/Account/UpdateProfileScreen";
 import CartScreen from "../screens/Cart/CartScreen";
 import CheckoutScreen from "../screens/Order/CheckoutScreen";
-import MenuNavigator from "./MenuNavigator";
 import OrderListScreen from "../screens/Order/OrderListScreen";
 import OrderDetailScreen from "../screens/Order/OrderDetailScreen";
 import ProductListByBrandScreen from "../screens/Brand/ProductListByBrandScreen";
 import ProductByColor from "../screens/ProductList/ProductByColor";
 import ProductByPrice from "../screens/ProductList/ProductByPrice";
 import ProductByQuantity from "../screens/ProductList/ProductByQuantity";
+import CreateUserScreen from "../screens/Admin/User/CreateUserScreen";
+import UserDetailScreen from "../screens/Admin/User/UserDetailScreen";
+
+import MenuNavigator from "./MenuNavigator";
+import AdminNavigator from "../screens/Admin/AdminNavigator";
 
 const Stack = createStackNavigator();
 
@@ -22,10 +26,27 @@ export default function AppNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen
+        name="AdminDashboard"
+        component={AdminNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CreateUserScreen"
+        component={CreateUserScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="UserDetailScreen"
+        component={UserDetailScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
         name="MainMenu"
         component={MenuNavigator}
         options={{ headerShown: false }}
       />
+
       <Stack.Screen
         name="ProductDetail"
         component={ProductDetailScreen}

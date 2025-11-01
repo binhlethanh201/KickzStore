@@ -7,6 +7,33 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const navigateByRole = async (token) => {
+    try {
+      const profileRes = await fetch("http://localhost:9999/api/users/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const profileData = await profileRes.json();
+      if (!profileRes.ok || !profileData.user) {
+        Alert.alert("Success", "Login successful! Welcome to KickzStore");
+        navigation.navigate("MainMenu", { screen: "Account" });
+        return;
+      }
+      const role = profileData.user.role;
+      if (role === 'admin') {
+        navigation.navigate("AdminDashboard", { screen: "AdminNavigator" }); 
+      } else {
+        Alert.alert("Success", "Login successful! Welcome to KickzStore");
+        navigation.navigate("MainMenu", { screen: "Account" }); 
+      }
+
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      Alert.alert("Success", "Login successful! Welcome to KickzStore");
+      navigation.navigate("MainMenu", { screen: "Account" });
+    }
+  };
+
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
       return Alert.alert("Validation Error", "Email and password are required.");
@@ -24,8 +51,7 @@ export default function LoginScreen({ navigation }) {
       const data = await response.json();
       if (response.ok) {
         await saveToken(data.token);
-        Alert.alert("Success", "Login successful! Welcome to KickzStore");
-        navigation.navigate("MainMenu", { screen: "Account" });
+        await navigateByRole(data.token);
       } else {
         Alert.alert("Login Failed", data.message || "Invalid email or password.");
       }
