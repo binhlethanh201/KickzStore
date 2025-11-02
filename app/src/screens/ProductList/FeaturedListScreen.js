@@ -21,7 +21,7 @@ export default function ProductList({ navigation }) {
       if (!fetched) {
         setLoading(true);
         axios
-          .get("http://localhost:9999/api/products")
+          .get("http://localhost:9999/api/products?isFeatured=true")
           .then((res) => {
             setProducts(res.data);
             setFetched(true);
@@ -64,7 +64,7 @@ export default function ProductList({ navigation }) {
 
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>All Products</Text>
+      <Text style={styles.sectionTitle}>Recommended For You</Text>
       <FlatList
         horizontal
         data={products}

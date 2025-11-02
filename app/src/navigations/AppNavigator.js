@@ -18,6 +18,7 @@ import CreateUserScreen from "../screens/Admin/User/CreateUserScreen";
 import UserDetailScreen from "../screens/Admin/User/UserDetailScreen";
 import AdminOrderDetailScreen from "../screens/Admin/Order/AdminOrderDetailScreen";
 import VoucherDetailScreen from "../screens/Admin/Voucher/VoucherDetailScreen";
+import AdminProductDetailScreen from "../screens/Admin/Product/AdminProductDetailScreen";
 
 import MenuNavigator from "./MenuNavigator";
 import AdminNavigator from "../screens/Admin/AdminNavigator";
@@ -52,13 +53,17 @@ export default function AppNavigator() {
         component={VoucherDetailScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="AdminProductDetail"
+        component={AdminProductDetailScreen}
+        options={{ headerShown: false }}
+      />
 
       <Stack.Screen
         name="MainMenu"
         component={MenuNavigator}
         options={{ headerShown: false }}
       />
-
       <Stack.Screen
         name="ProductDetail"
         component={ProductDetailScreen}
@@ -122,7 +127,7 @@ export default function AppNavigator() {
         component={OrderDetailScreen}
         options={{ title: "OrderDetail" }}
       />
-      <Stack.Screen
+       <Stack.Screen
         name="ProductListByBrand"
         component={ProductListByBrandScreen}
         options={{ title: "" }}
