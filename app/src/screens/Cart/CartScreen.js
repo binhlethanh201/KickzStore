@@ -216,7 +216,7 @@ export default function CartScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
+    <SafeAreaView style={styles.safeContainer} edges={['top']}>
       <FlatList
         data={cartItems}
         keyExtractor={getItemKey}

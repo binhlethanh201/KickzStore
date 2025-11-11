@@ -1,8 +1,6 @@
 const User = require("../models/User");
 const Product = require("../models/Product");
 const Order = require("../models/Order");
-const Cart = require("../models/Cart");
-const Wishlist = require("../models/Wishlist");
 const Voucher = require("../models/Voucher");
 const bcrypt = require("bcryptjs");
 
@@ -320,6 +318,178 @@ class AdminController {
       res.status(200).json({ message: "Product deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  }
+
+  //Report And Analytics
+  //Dashboard Overview Stats
+  async getDashboardStats(req, res) {
+    try {
+      const totalUsers = await User.countDocuments({ role: "user" });
+      const totalProducts = await Product.countDocuments();
+      const totalOrders = await Order.countDocuments();
+
+      const revenueResult = await Order.aggregate([
+        { $match: { status: { $in: ["paid", "completed", "shipped", "processing"] } } },
+        { $group: { _id: null, totalRevenue: { $sum: "$totalPrice" } } }
+      ]);
+      const totalRevenue = revenueResult.length > 0 ? revenueResult[0].totalRevenue : 0;
+
+      const pendingOrders = await Order.countDocuments({ status: "pending" });
+
+      res.status(200).json({
+        totalUsers,
+        totalProducts,
+        totalOrders,
+        totalRevenue,
+        pendingOrders
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching dashboard stats", error: error.message });
+    }
+  }
+  //Order & Revenue Report (Flexible by Month, Quarter, Year)
+  async getOrderReport(req, res) {
+    try {
+      const { type, year } = req.query;
+
+      const currentYear = new Date().getFullYear();
+      const reportYear = year ? parseInt(year) : currentYear;
+
+      let groupBy, sortOrder;
+      let matchStage = {
+        createdAt: {
+          $gte: new Date(`${reportYear}-01-01`),
+          $lte: new Date(`${reportYear}-12-31T23:59:59.999Z`)
+        },
+        status: { $in: ["paid", "completed", "shipped", "processing"] }
+      };
+
+      if (type === 'month') {
+        groupBy = { month: { $month: "$createdAt" } };
+        sortOrder = { "_id.month": 1 };
+      } else if (type === 'quarter') {
+        groupBy = {
+          quarter: { $ceil: { $divide: [{ $month: "$createdAt" }, 3] } }
+        };
+        sortOrder = { "_id.quarter": 1 };
+      } else if (type === 'year') {
+        matchStage = { status: { $in: ["paid", "completed", "shipped", "processing"] } };
+        groupBy = { year: { $year: "$createdAt" } };
+        sortOrder = { "_id.year": 1 };
+      } else {
+        groupBy = { month: { $month: "$createdAt" } };
+        sortOrder = { "_id.month": 1 };
+      }
+
+      const report = await Order.aggregate([
+        { $match: matchStage },
+        {
+          $group: {
+            _id: groupBy,
+            totalOrders: { $sum: 1 },
+            totalRevenue: { $sum: "$totalPrice" }
+          }
+        },
+        { $sort: sortOrder }
+      ]);
+      const formattedReport = report.map(item => {
+        let label;
+        if (item._id.month) label = `Month ${item._id.month}`;
+        else if (item._id.quarter) label = `Q${item._id.quarter}`;
+        else if (item._id.year) label = `Year ${item._id.year}`;
+
+        return {
+          label,
+          ...item._id,
+          totalOrders: item.totalOrders,
+          totalRevenue: item.totalRevenue
+        };
+      });
+
+      res.status(200).json(formattedReport);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching order report", error: error.message });
+    }
+  }
+  //User Registration Report
+  async getUserReport(req, res) {
+    try {
+      const { type, year } = req.query;
+      const currentYear = new Date().getFullYear();
+      const reportYear = year ? parseInt(year) : currentYear;
+
+      let groupBy, matchStage = { createdAt: { $gte: new Date(`${reportYear}-01-01`), $lte: new Date(`${reportYear}-12-31`) } };
+
+      if (type === 'year') {
+        matchStage = {};
+        groupBy = { year: { $year: "$createdAt" } };
+      } else if (type === 'quarter') {
+        groupBy = { quarter: { $ceil: { $divide: [{ $month: "$createdAt" }, 3] } } };
+      } else {
+        groupBy = { month: { $month: "$createdAt" } };
+      }
+
+      const report = await User.aggregate([
+        { $match: { role: 'user', ...matchStage } },
+        { $group: { _id: groupBy, count: { $sum: 1 } } },
+        { $sort: { "_id": 1 } }
+      ]);
+
+      const formattedReport = report.map(item => {
+        let label;
+        if (item._id.month) label = `Month ${item._id.month}`;
+        else if (item._id.quarter) label = `Q${item._id.quarter}`;
+        else if (item._id.year) label = `Year ${item._id.year}`;
+        return { label, ...item._id, count: item.count };
+      });
+
+      res.status(200).json(formattedReport);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching user report", error: error.message });
+    }
+  }
+  //Top Selling Products Report
+  async getProductReport(req, res) {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit) : 5;
+
+      const topProducts = await Order.aggregate([
+        { $match: { status: { $in: ["paid", "completed", "shipped", "processing"] } } },
+        { $unwind: "$items" },
+        {
+          $group: {
+            _id: "$items.productId",
+            totalSold: { $sum: "$items.quantity" },
+            totalRevenue: { $sum: { $multiply: ["$items.price", "$items.quantity"] } }
+          }
+        },
+        { $sort: { totalSold: -1 } },
+        { $limit: limit },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productInfo"
+          }
+        },
+        { $unwind: "$productInfo" },
+        {
+          $project: {
+            _id: 1,
+            name: "$productInfo.name",
+            img: "$productInfo.img",
+            price: "$productInfo.price",
+            totalSold: 1,
+            totalRevenue: 1
+          }
+        }
+      ]);
+
+      res.status(200).json(topProducts);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching product report", error: error.message });
     }
   }
 

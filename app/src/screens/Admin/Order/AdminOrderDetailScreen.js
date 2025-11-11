@@ -180,7 +180,7 @@ export default function AdminOrderDetailScreen() {
         (order.status === 'cancelled') ? '#DC143C' : '#FFA500';
 
     return (
-        <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
             <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} />
             <ScrollView>
                 <View style={styles.header}>

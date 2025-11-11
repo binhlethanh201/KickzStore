@@ -37,14 +37,13 @@ const OrderProductItem = ({ item }) => (
 );
 
 const OrderItem = ({ order, navigation }) => {
-    const getStatusColor = () => {
-        switch (order.status) {
-            case "completed":
-                return styles.statusCompleted;
-            case "shipped":
-                return styles.statusShipped;
-            case "cancelled":
-                return styles.statusCancelled;
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "completed": return styles.statusCompleted;
+            case "shipped": return styles.statusShipped;
+            case "processing": return styles.statusProcessing;
+            case "paid": return styles.statusPaid;
+            case "cancelled": return styles.statusCancelled;
             case "pending":
             default:
                 return styles.statusPending;
@@ -162,7 +161,7 @@ export default function OrderListScreen() {
 
     if (orders.length === 0) {
         return (
-            <SafeAreaView style={styles.safeContainer}>
+            <SafeAreaView style={styles.safeContainer} edges={['top']}>
                 <FlatList
                     data={[]}
                     ListHeaderComponent={
@@ -183,7 +182,7 @@ export default function OrderListScreen() {
     }
 
     return (
-        <SafeAreaView style={styles.safeContainer}>
+        <SafeAreaView style={styles.safeContainer} edges={['top']}>
             <FlatList
                 data={orders}
                 renderItem={({ item }) => <OrderItem order={item} navigation={navigation} />}

@@ -15,7 +15,7 @@ export default StyleSheet.create({
     flex: 1,
     width: "100%",
   },
-  
+
   title: {
     fontSize: 26,
     fontWeight: "700",
@@ -81,6 +81,9 @@ export default StyleSheet.create({
   },
   buttonBlue: {
     backgroundColor: "#3b82f6",
+  },
+  buttonOrange: {
+    backgroundColor: "#FFA500",
   },
   buttonRed: {
     backgroundColor: "#e11d48",

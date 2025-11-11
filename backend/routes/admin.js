@@ -5,6 +5,11 @@ const verifyToken = require("../middlewares/auth");
 const checkAdmin = require("../middlewares/admin");
 
 router.use(verifyToken, checkAdmin);
+//Report And Analytics
+router.get("/dashboard-stats", AdminController.getDashboardStats);
+router.get("/reports/orders", AdminController.getOrderReport);
+router.get("/reports/users", AdminController.getUserReport);
+router.get("/reports/products", AdminController.getProductReport);
 //Users Management
 router.get("/users", AdminController.getAllUsers);
 router.get("/users/:id", AdminController.getUserById);

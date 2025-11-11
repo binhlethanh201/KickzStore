@@ -204,7 +204,7 @@ export default function ProductManagementScreen() {
     }
 
     return (
-        <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
             <FlatList
                 data={products}
                 renderItem={({ item }) => (

@@ -293,7 +293,7 @@ export default function VoucherManagementScreen() {
     }
 
     return (
-        <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
             <FlatList
                 data={vouchers}
                 renderItem={renderItem}

@@ -6,9 +6,7 @@ import ChangePasswordScreen from "../screens/Account/ChangePasswordScreen";
 import LoginScreen from "../screens/Account/LoginScreen";
 import RegisterScreen from "../screens/Account/RegisterScreen";
 import UpdateProfileScreen from "../screens/Account/UpdateProfileScreen";
-import CartScreen from "../screens/Cart/CartScreen";
 import CheckoutScreen from "../screens/Order/CheckoutScreen";
-import OrderListScreen from "../screens/Order/OrderListScreen";
 import OrderDetailScreen from "../screens/Order/OrderDetailScreen";
 import ProductListByBrandScreen from "../screens/Brand/ProductListByBrandScreen";
 import ProductByColor from "../screens/ProductList/ProductByColor";
@@ -16,6 +14,8 @@ import ProductByPrice from "../screens/ProductList/ProductByPrice";
 import ProductByQuantity from "../screens/ProductList/ProductByQuantity";
 import CreateUserScreen from "../screens/Admin/User/CreateUserScreen";
 import UserDetailScreen from "../screens/Admin/User/UserDetailScreen";
+import CardScreen from "../screens/Card/CardScreen";
+import AddCardScreen from "../screens/Card/AddCardScreen";
 import AdminOrderDetailScreen from "../screens/Admin/Order/AdminOrderDetailScreen";
 import VoucherDetailScreen from "../screens/Admin/Voucher/VoucherDetailScreen";
 import AdminProductDetailScreen from "../screens/Admin/Product/AdminProductDetailScreen";
@@ -28,37 +28,6 @@ const Stack = createStackNavigator();
 export default function AppNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="AdminDashboard"
-        component={AdminNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="CreateUserScreen"
-        component={CreateUserScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="UserDetailScreen"
-        component={UserDetailScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="AdminOrderDetail"
-        component={AdminOrderDetailScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="VoucherDetailScreen"
-        component={VoucherDetailScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="AdminProductDetail"
-        component={AdminProductDetailScreen}
-        options={{ headerShown: false }}
-      />
-
       <Stack.Screen
         name="MainMenu"
         component={MenuNavigator}
@@ -108,8 +77,13 @@ export default function AppNavigator() {
         options={{ title: "ChangePassword" }}
       />
       <Stack.Screen
-        name="Cart"
-        component={CartScreen}
+        name="Card"
+        component={CardScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AddCard"
+        component={AddCardScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -118,16 +92,11 @@ export default function AppNavigator() {
         options={{ headerTitle: "Checkout" }}
       />
       <Stack.Screen
-        name="OrderList"
-        component={OrderListScreen}
-        options={{ title: "OrderList" }}
-      />
-      <Stack.Screen
         name="OrderDetail"
         component={OrderDetailScreen}
         options={{ title: "OrderDetail" }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="ProductListByBrand"
         component={ProductListByBrandScreen}
         options={{ title: "" }}
@@ -146,6 +115,37 @@ export default function AppNavigator() {
         name="ProductByQuantity"
         component={ProductByQuantity}
         options={{ title: "Sort By Quantity" }}
+      />
+
+      <Stack.Screen
+        name="AdminDashboard"
+        component={AdminNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CreateUserScreen"
+        component={CreateUserScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="UserDetailScreen"
+        component={UserDetailScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AdminOrderDetail"
+        component={AdminOrderDetailScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="VoucherDetailScreen"
+        component={VoucherDetailScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AdminProductDetail"
+        component={AdminProductDetailScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

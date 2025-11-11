@@ -90,6 +90,10 @@ export default function AccountScreen({ navigation }) {
             <Text style={styles.buttonText}>Change Password</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity style={[styles.button, styles.buttonOrange]} onPress={() => navigation.navigate("Card")}>
+            <Text style={styles.buttonText}>My Cards</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity style={[styles.button, styles.buttonRed]} onPress={handleLogout}>
             <Text style={styles.buttonText}>Sign Out</Text>
           </TouchableOpacity>

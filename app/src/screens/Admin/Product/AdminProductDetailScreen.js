@@ -247,7 +247,7 @@ export default function AdminProductDetailScreen() {
     const statusColor = product.isFeatured ? '#16A34A' : '#FFA500';
 
     return (
-        <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
             <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} />
             <ScrollView>
                 <View style={styles.header}>

@@ -72,7 +72,7 @@ export default function ProductListByBrandScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
       <StatusBar barStyle="dark-content" />
       <FlatList
         data={products}

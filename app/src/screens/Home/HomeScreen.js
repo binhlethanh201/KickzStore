@@ -12,7 +12,7 @@ import styles from "./styles";
 
 export default function HomeScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.scrollContainer}

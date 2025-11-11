@@ -272,7 +272,7 @@ export default function UserManagementScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
       <FlatList
         data={users}
         renderItem={renderItem}

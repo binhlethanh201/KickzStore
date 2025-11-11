@@ -170,7 +170,7 @@ export default function VoucherDetailScreen() {
         : `$${voucher.discountValue.toFixed(2)} OFF`;
 
     return (
-        <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
             <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} />
             <ScrollView>
                 <View style={styles.header}>

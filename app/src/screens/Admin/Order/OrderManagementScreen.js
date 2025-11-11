@@ -126,7 +126,7 @@ export default function OrderManagementScreen() {
     }
 
     return (
-        <SafeAreaView style={[styles.safeArea, { backgroundColor }]}>
+        <SafeAreaView style={[styles.safeArea, { backgroundColor }]} edges={['top']}>
             <FlatList
                 data={orders}
                 renderItem={({ item }) => (

@@ -124,7 +124,7 @@ export default function ProductDetailScreen({ route, navigation }) {
 
   return (
 
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
       <StatusBar barStyle="dark-content" />
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.imageContainer}>

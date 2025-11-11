@@ -25,7 +25,6 @@ const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-
 const DetailProductItem = ({ item }) => (
     <View style={styles.detailProductItem}>
         <Image
@@ -68,63 +67,66 @@ export default function OrderDetailScreen() {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case "completed":
-                return styles.statusCompleted;
-            case "shipped":
-                return styles.statusShipped;
-            case "cancelled":
-                return styles.statusCancelled;
+            case "completed": return styles.statusCompleted;
+            case "shipped": return styles.statusShipped;
+            case "processing": return styles.statusProcessing;
+            case "paid": return styles.statusPaid;
+            case "cancelled": return styles.statusCancelled;
             case "pending":
             default:
                 return styles.statusPending;
         }
     };
 
-    useEffect(() => {
-        const fetchOrderDetail = async () => {
-            if (!orderId) {
-                Alert.alert("Error", "No Order ID provided");
+    const fetchOrderDetail = async () => {
+        if (!orderId) {
+            Alert.alert("Error", "No Order ID provided");
+            setLoading(false);
+            return;
+        }
+        setLoading(true);
+        try {
+            const token = await getToken();
+            if (!token) {
+                Alert.alert("Error", "You are not authenticated.");
                 setLoading(false);
                 return;
             }
-            try {
-                const token = await getToken();
-                if (!token) {
-                    Alert.alert("Error", "You are not authenticated.");
-                    setLoading(false);
-                    return;
-                }
 
-                const res = await fetch(
-                    `http://localhost:9999/api/orders/detail/${orderId}`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-
-                const data = await res.json();
-                if (res.ok) {
-                    setOrder(data.order);
-                } else {
-                    Alert.alert("Error", data.message || "Failed to load order details.");
+            const res = await fetch(
+                `http://localhost:9999/api/orders/detail/${orderId}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
                 }
-            } catch (error) {
-                console.error("Fetch order detail error:", error);
-                Alert.alert("Error", "Could not connect to server.");
-            } finally {
-                setLoading(false);
+            );
+
+            const data = await res.json();
+            if (res.ok) {
+                setOrder(data.order);
+            } else {
+                Alert.alert("Error", data.message || "Failed to load order details.");
             }
-        };
+        } catch (error) {
+            console.error("Fetch order detail error:", error);
+            Alert.alert("Error", "Could not connect to server.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        fetchOrderDetail();
-    }, [orderId]);
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            fetchOrderDetail();
+        });
+        return unsubscribe;
+    }, [orderId, navigation]);
 
     const handleCancelOrder = () => {
         if (isCancelling) return;
 
         Alert.alert(
             "Cancel Order",
-            "Are you sure you want to cancel this order?",
+            "Are you sure you want to cancel this order? Paid orders will be refunded.",
             [
                 {
                     text: "Don't Cancel",
@@ -149,7 +151,7 @@ export default function OrderDetailScreen() {
 
                             const data = await res.json();
                             if (res.ok) {
-                                Alert.alert("Success", "Your order has been cancelled.");
+                                Alert.alert("Success", data.message);
                                 setOrder(data.order);
                             } else {
                                 Alert.alert("Cancellation Failed", data.message);
@@ -212,7 +214,6 @@ export default function OrderDetailScreen() {
         );
     };
 
-
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
@@ -230,7 +231,7 @@ export default function OrderDetailScreen() {
     }
 
     return (
-        <SafeAreaView style={styles.safeContainer}>
+        <SafeAreaView style={styles.safeContainer} edges={['top']}>
             <StatusBar barStyle="dark-content" />
             <ScrollView style={{ flex: 1 }}>
                 <View style={styles.detailHeader}>
@@ -254,7 +255,13 @@ export default function OrderDetailScreen() {
                     <Text style={styles.sectionTitle}>Shipping & Payment</Text>
                     <DetailRow label="Shipping Address" value={order.address} />
                     <DetailRow label="Shipping Method" value={order.shippingMethod} />
-                    <DetailRow label="Payment Method" value={order.paymentMethod} />
+                    <DetailRow label="Payment Method" value={order.paymentMethod.toUpperCase()} />
+                    {order.paymentMethod === "credit_card" && order.cardId && (
+                        <DetailRow
+                            label="Paid with Card"
+                            value={`${order.cardId.cardName || 'Card'} (**** ${order.cardId.cardNumber.slice(-4)})`}
+                        />
+                    )}
                 </View>
                 <View style={styles.detailSection}>
                     <Text style={styles.sectionTitle}>Financial Summary</Text>
@@ -285,7 +292,7 @@ export default function OrderDetailScreen() {
                     </View>
                 </View>
             </ScrollView>
-            {order.status === 'pending' && (
+            {['pending', 'paid'].includes(order.status) && (
                 <View style={styles.cancelButtonFooter}>
                     <TouchableOpacity
                         style={[
@@ -324,4 +331,3 @@ export default function OrderDetailScreen() {
         </SafeAreaView>
     );
 }
-
